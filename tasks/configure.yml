@@ -1,0 +1,26 @@
+---
+# module: rd-ansible-zfs-partition/tasks/configure
+# description: Configure rd-ansible-zfs-partition and create the ZFSpool
+
+- name: Create our list of none system disks, this is for creating the ZFS pool
+  set_fact:
+    blank_disks: "{{ blank_disks + [ item ] }}"
+  with_items: "{{ disk_var }}"
+  when:
+    - item not in system_disks
+    - item not in zfs_spare_disks
+    - not zfs_ignore_disks | fuzzy_bidirectional_search(item)
+
+- name: Create the zfspool "{{ zfs_path }}" using the remaining none system disks and none pool disks, this will not run if ZFS pool of this name already exists
+  command: zpool create -f {{ zfs_path }} {{ zfs_raid_type }} {{ blank_disks | join(' ') }}
+  args:
+    creates: "/{{ zfs_path }}"
+
+- name: Add the spares to the zfspool
+  command: zpool add -f {{ zfs_path }} spare {{ zfs_spare_disks | join(' ') }}
+  when: ( zfs_spare_disks.0 is defined )
+
+- name: Add on any zpool options
+  command: zfs set {{ item }} {{ zfs_path }}
+  when: ( zpool_options.0 is defined )
+  with_items: "{{ zpool_options }}"

@@ -1,0 +1,17 @@
+---
+# module: rd-ansible-zfs-partition/tasks
+# description: Install rd-ansible-zfs-partition onto an Ubuntu 16 or 18 server
+
+- name: Install all required packages for ZFS partition
+  include_tasks: install.yml
+  when: zfs_install == true
+
+- name: Check if any disks have existing partitions
+  include_tasks: check.yml
+  when: zfs_install == true
+
+- name: Create our ZFS partitions if no partitions exist
+  include_tasks: configure.yml
+  when:
+    - zfs_install == true
+    - disk_check_failed == false

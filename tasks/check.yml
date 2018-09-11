@@ -1,0 +1,21 @@
+---
+# module: rd-ansible-zfs-partition/tasks/check
+# description: Check if any existing existing partition, mdraid or LVM
+
+- name: Check if any of the disks have partitions or data present
+  check_disks:
+    disks: "{{ disk_var }}"
+    excludes: "{{ ignored_disks }}"
+  register: disk_status
+
+- name: Check all drives for existing partitions
+  set_fact:
+    disk_check_failed: true
+  when:
+    - disk_var | intersect(system_disks) | length > 0
+    - disk_status.status
+
+- name: Print warning if we are not creating ZFS volume
+  debug:
+    msg: "Zpool is not created since existing partition, MDRAID or LVM found on none system disks: {{ disk_status.output }}"
+  when: disk_check_failed == true

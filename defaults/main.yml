@@ -1,0 +1,35 @@
+---
+# name: rd-ansible-zfs-partition/defaults
+# description: ALL our default variables for rd-ansible-zfs-partition go in here
+#------------------------------------------------------------------------------
+# Standard variables - All our required packages and override variables
+#------------------------------------------------------------------------------
+
+# - pre-requisites -
+packages:                             # Packages required for ZFS setup
+    - "linux-image-{{ ansible_kernel }}"
+    - zfsutils-linux
+    - util-linux
+
+# - Disk Variables -
+system_disks: []                      # System disks - These are skipped over during the check, if this is unset then the drive with the /boot partition is assumed to be the primary disk
+zfs_spare_disks: []                   # Spare disks - What will we use for our ZFS spares ( For blank list use [] )
+zpool_options:                        # What options should be enabled for our Zpool ( For blank list use [])
+  - dedup=on
+  - acltype=posixacl
+  - xattr=sa
+
+# - ZFS Variables -
+zfs_path: pool                        # What do we wish to call the ZFS pool and mount path
+zfs_raid_type: raidz1                 # What type of RAID do we wish to define ( raidz1 raidz2 etc...)
+zfs_install: false                    # Do we install a zfs partition by default
+zfs_ignore_disks:                     # Ignored disk types during check and creation process
+  - loop
+  - dm
+  - md
+
+#------------------------------------------------------------------------------
+# Utility variables - These are utilized later in the role and do not need setting
+#------------------------------------------------------------------------------
+blank_disks: []                       # This is determined from the list of current system disks and spare disks ( ie the ones which are not used up ) and is used for creating the zpool
+disk_check_failed: false              # Default data which is overriden later if required
