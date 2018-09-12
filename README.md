@@ -1,4 +1,4 @@
-rd-ansible-zfs-partition [![Build Status](https://travis-ci.org/bbc/rd-ansible-zfs-partition.svg?branch=master)](https://travis-ci.org/bbc/rd-ansible-zfs-partition)
+rd-ansible-zfs-partition
 =========
 
 This role creates and manages ZFS Zpools, it exits if anything already exists in the way of LVM, MDADM or partitions on the disks.
