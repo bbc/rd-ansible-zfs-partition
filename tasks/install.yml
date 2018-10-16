@@ -2,17 +2,16 @@
 # module: rd-ansible-zfs-partition/tasks/install
 # description: Install our required packages for rd-ansible-zfs-partition
 
-- name: Update apt-cache - use command since apt update cache module is unreliable
-  command: "apt-get update"
-  changed_when: false
-  args:
-    warn: false
-
-- name: Install all required packages for rd-ansible-zfs-partition
+- name: Install packages
   package:
-    name: "{{ item }}"
+    name: "{{ packages }}"
     state: present
-  with_items: "{{ packages }}"
+    update_cache: "{{ (ansible_pkg_mgr in ['apt', 'zypper']) | ternary('yes', omit) }}"
+    cache_valid_time: "{{ (ansible_pkg_mgr == 'apt') | ternary(cache_timeout, omit) }}"
+  register: install_packages
+  until: install_packages is success
+  retries: 5
+  delay: 2
 
 - name: Enable ZFS on current system
   modprobe:

@@ -11,6 +11,8 @@ packages:                             # Packages required for ZFS setup
     - zfsutils-linux
     - util-linux
 
+cache_timeout: 600                    # Packagem manager cache maximum age
+
 # - Disk Variables -
 system_disks: []                      # System disks - These are skipped over during the check, if this is unset then the drive with the /boot partition is assumed to be the primary disk
 zfs_spare_disks: []                   # Spare disks - What will we use for our ZFS spares ( For blank list use [] )
