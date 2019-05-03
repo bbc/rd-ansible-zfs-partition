@@ -29,6 +29,7 @@ zfs_ignore_disks:                     # Ignored disk types during check and crea
   - loop
   - dm
   - md
+  - sr
 
 #------------------------------------------------------------------------------
 # Utility variables - These are utilized later in the role and do not need setting
