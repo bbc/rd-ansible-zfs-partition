@@ -61,7 +61,7 @@
 
 - name: Set up ignored disks
   set_fact:
-    ignored_disks: "{{ ignored_disks }} + [ item ]"
+    ignored_disks: "{{ ignored_disks + [ item ] }}"
   with_items:
     - "{{ system_disks }}"
     - "{{ zfs_ignore_disks }}"
