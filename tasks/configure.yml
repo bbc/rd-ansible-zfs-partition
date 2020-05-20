@@ -24,3 +24,9 @@
   command: zfs set {{ item }} {{ zfs_path }}
   when: ( zpool_options.0 is defined )
   with_items: "{{ zpool_options }}"
+
+- name: Export zfspool
+  command: zpool export {{ zfs_path }}
+
+- name: Import zfspool by ID
+  command: zpool import -d /dev/disk/by-id {{ zfs_path }}
