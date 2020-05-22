@@ -15,6 +15,7 @@
   command: zpool create -f {{ zfs_path }} {{ zfs_raid_type }} {{ blank_disks | join(' ') }}
   args:
     creates: "/{{ zfs_path }}"
+  register: pool_created
 
 - name: Add the spares to the zfspool
   command: zpool add -f {{ zfs_path }} spare {{ zfs_spare_disks | join(' ') }}
@@ -27,6 +28,8 @@
 
 - name: Export zfspool
   command: zpool export {{ zfs_path }}
+  when: pool_created.changed
 
 - name: Import zfspool by ID
   command: zpool import -d /dev/disk/by-id {{ zfs_path }}
+  when: pool_created.changed
