@@ -56,7 +56,7 @@
 
 - name: "Set up var for disks"
   set_fact:
-    disk_var: "{{ hostvars[inventory_hostname]['ansible_devices'].keys() }}"
+    disk_var: "{{ hostvars[inventory_hostname]['ansible_devices'].keys()|list }}"
     ignored_disks: []
 
 - name: Set up ignored disks
