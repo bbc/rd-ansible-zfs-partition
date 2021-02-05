@@ -4,3 +4,4 @@
 *.vagrant
 roles/*
 roles-d*/*
+filter_plugins/__pycache__/*
