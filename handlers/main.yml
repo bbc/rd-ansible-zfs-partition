@@ -1,0 +1,8 @@
+---
+- name: Restart zfs-zed
+  systemd:
+    name: zfs-zed
+    state: restarted
+    enabled: yes
+  listen: restart zfs_zed
+

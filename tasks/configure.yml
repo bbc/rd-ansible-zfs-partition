@@ -33,3 +33,26 @@
 - name: Import zfspool by ID
   command: zpool import -d /dev/disk/by-id {{ zfs_path }}
   when: pool_created.changed
+
+- name: Enable caching for ZFS config
+  block:
+    - name: Ensure zpool cache directory exists
+      file:
+        path: "/etc/zfs/zfs-list.cache"
+        state: directory
+
+    - name: Create cache file for this pool
+      file:
+        path: "/etc/zfs/zfs-list.cache/{{ zfs_path }}"
+        state: touch
+      notify: restart zfs_zed
+      changed_when: False
+
+    - name: Ensure ZFS list caching is enabled
+      file:
+        src: "/usr/lib/zfs-linux/zed.d/history_event-zfs-list-cacher.sh"
+        dest: "/etc/zfs/zed.d/history_event-zfs-list-cacher.sh"
+        state: link
+      notify: restart zfs_zed
+
+  when: (ansible_distribution_major_version is defined and (ansible_distribution_major_version|int >= 20))
