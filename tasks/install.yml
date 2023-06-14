@@ -27,7 +27,7 @@
 
 - name: Set system disk based on above check
   set_fact:
-    system_disks: "{{ system_disks }} + [ '{{ item | basename }}' ]"
+    system_disks: "{{ system_disks + [ item | basename ] }}"
   with_items: "{{ system_disk_check.stdout_lines | default([]) }}"
 
 - name: If system disk is undefined then check boot partition and assume this is a system disk
